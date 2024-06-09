@@ -1,22 +1,35 @@
-<table>
-    <thead>
-        <tr>
-            <th>Distance (km)</th>
-            <th>Time (minutes)</th>
-            <th>Average Heart Rate (bpm)</th>
-            <th>Total Ascent (m)</th>
-            <th>Difficulty</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for activity in context['activities'] %}
-        <tr>
-            <td>{{ activity.udaljenost }}</td>
-            <td>{{ activity.vrijeme }}</td>
-            <td>{{ activity.prosjecni_puls }}</td>
-            <td>{{ activity.ukupni_uspon }}</td>
-            <td>{{ activity.tezina }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+<div>
+    <table>
+        <thead>
+            <tr>
+                <th>Distance (km)</th>
+                <th>Time (minutes)</th>
+                <th>Average Heart Rate (bpm)</th>
+                <th>Total Ascent (m)</th>
+                <th>Difficulty</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for activity in context['activities'] %}
+            <tr>
+                <td>{{ activity.udaljenost }}</td>
+                <td>{{ activity.vrijeme }}</td>
+                <td>{{ activity.prosjecni_puls }}</td>
+                <td>{{ activity.ukupni_uspon }}</td>
+                <td>{{ activity.tezina }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Pagination controls -->
+    <div>
+        {% if context['page'] > 1 %}
+        <button hx-get="/activities?page={{ context['page'] - 1 }}&per_page={{ context['per_page'] }}" hx-target="#activities" hx-swap="innerHTML">Previous</button>
+        {% endif %}
+        <span>Page {{ context['page'] }} of {{ (context['total_activities'] // context['per_page']) + 1 }}</span>
+        {% if context['page'] < (context['total_activities'] // context['per_page']) + 1 %}
+        <button hx-get="/activities?page={{ context['page'] + 1 }}&per_page={{ context['per_page'] }}" hx-target="#activities" hx-swap="innerHTML">Next</button>
+        {% endif %}
+    </div>
+</div>

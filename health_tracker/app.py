@@ -8,6 +8,7 @@ from kafka import KafkaConsumer
 import pandas as pd
 import json
 import os
+from flask_paginate import Pagination, get_page_parameter
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
@@ -188,18 +189,31 @@ def index():
     activities = session.query(UserActivity).filter(UserActivity.username == current_user.username).all()
     session.close()
 
-    context = {'user': user_id, 'activities': activities}
-    return render_template('index.html', context=context)
+    return render_template('index.html', user=user_id)
 
-@app.route('/activities')
+@app.route('/activities', methods=['GET'])
 @login_required
-def get_activities():    
+def get_activities():
     session = SessionLocal()
-    activities = session.query(UserActivity).filter(UserActivity.username == current_user.username).all()
+
+    page = request.args.get('page', 1, type=int)
+    per_page = request.args.get('per_page', 10, type=int)
+
+    total_activities = session.query(UserActivity).filter(UserActivity.username == current_user.username).count()
+    activities = session.query(UserActivity)\
+        .filter(UserActivity.username == current_user.username)\
+        .offset((page - 1) * per_page)\
+        .limit(per_page)\
+        .all()
 
     session.close()
 
-    context = {'activities': activities}
+    context = {
+        'activities': activities,
+        'total_activities': total_activities,
+        'page': page,
+        'per_page': per_page,
+    }
     return render_template('partials/activities.html', context=context)
 
 @app.route('/predict', methods=['POST'])
@@ -221,8 +235,7 @@ def predict():
             tezina = 'moderated'
         else:
             tezina = 'hard'
-        context = {'prediction': tezina}
-        return render_template('partials/prediction.html', context=context)
+        return render_template('partials/prediction.html', prediction=tezina)
     else:
         app.logger.error(f"Prediction request failed: {response.text}")
         return jsonify({'error': 'Prediction failed'}), 500
