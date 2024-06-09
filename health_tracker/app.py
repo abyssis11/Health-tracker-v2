@@ -280,18 +280,18 @@ def get_analytics():
 
     if analytics:
         analytics_data = {
-            'avg_distance': analytics.avg_distance,
-            'avg_time': analytics.avg_time,
-            'avg_heart_rate': analytics.avg_heart_rate,
-            'avg_ascent': analytics.avg_ascent,
-            'max_distance': analytics.max_distance,
-            'max_time': analytics.max_time,
-            'max_ascent': analytics.max_ascent
+            'avg_distance': round(analytics.avg_distance,2),
+            'avg_time': round(analytics.avg_time, 2),
+            'avg_heart_rate': round(analytics.avg_heart_rate,2 ),
+            'avg_ascent': round(analytics.avg_ascent, 2),
+            'max_distance': round(analytics.max_distance, 2),
+            'max_time': round(analytics.max_time, 2),
+            'max_ascent': round(analytics.max_ascent, 2)
         }
     else:
         analytics_data = {}
 
-    return jsonify(analytics_data)
+    return render_template('partials/analytics.html', analytics=analytics_data)
 
 def consume_kafka_messages(user_id, stop_event):
     consumer = KafkaConsumer(

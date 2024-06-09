@@ -19,6 +19,21 @@
         .table-container {
             margin-top: 30px;
         }
+        .custom-list {
+            list-style-type: none; /* Remove default list bullets */
+            padding: 0;
+        }
+
+        .custom-list li {
+            margin: 5px 0; /* Add some space between list items */
+        }
+
+        .custom-list li::before {
+            color: green; /* Color of the icon */
+            display: inline-block; 
+            width: 1em; /* Adjust the width of the icon container */
+            margin-right: 0.5em; /* Space between icon and text */
+        }
     </style>
 </head>
 <body>
@@ -28,6 +43,11 @@
             <a href="{{ url_for('logout') }}" class="btn btn-secondary logout-btn">Logout</a>
             
             <div id="activities" hx-get="/activities" hx-swap="innerHTML" hx-trigger="load, every 5s">
+                <!-- Initial content will be loaded here by HTMX -->
+            </div>
+
+            <h2>{{user}} analytics:</h2>
+            <div id="analytics" hx-get="/analytics" hx-swap="innerHTML" hx-trigger="load, every 5s">
                 <!-- Initial content will be loaded here by HTMX -->
             </div>
 
