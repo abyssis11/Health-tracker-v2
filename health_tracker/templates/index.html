@@ -15,24 +15,30 @@
         }
         .main-content {
             margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 500px; /* Add padding to create space at the top */
         }
         .table-container {
             margin-top: 30px;
         }
         .custom-list {
-            list-style-type: none; /* Remove default list bullets */
+            list-style-type: none;
             padding: 0;
         }
-
         .custom-list li {
-            margin: 5px 0; /* Add some space between list items */
+            margin: 5px 0;
         }
-
         .custom-list li::before {
-            color: green; /* Color of the icon */
-            display: inline-block; 
-            width: 1em; /* Adjust the width of the icon container */
-            margin-right: 0.5em; /* Space between icon and text */
+            color: green;
+            display: inline-block;
+            width: 1em;
+            margin-right: 0.5em;
+        }
+        .placeholder {
+            min-height: 200px; /* Adjust as needed */
+            width: 100%;
         }
     </style>
 </head>
@@ -41,16 +47,20 @@
         <div>
             <h1>Hi {{ user }}, welcome to the Health Tracker!</h1>
             <a href="{{ url_for('logout') }}" class="btn btn-secondary logout-btn">Logout</a>
-            
-            <div id="activities" hx-get="/activities" hx-swap="innerHTML" hx-trigger="load, every 5s">
-                <!-- Initial content will be loaded here by HTMX -->
-            </div>
+        </div>
 
+        <div id="activities" class="placeholder" hx-get="/activities" hx-swap="innerHTML" hx-trigger="load, every 5s">
+            <!-- Initial content will be loaded here by HTMX -->
+        </div>
+
+        <div>
             <h2>{{user}} analytics:</h2>
-            <div id="analytics" hx-get="/analytics" hx-swap="innerHTML" hx-trigger="load, every 5s">
+            <div id="analytics" class="placeholder" hx-get="/analytics" hx-swap="innerHTML" hx-trigger="load, every 5s">
                 <!-- Initial content will be loaded here by HTMX -->
             </div>
+        </div>
 
+        <div>
             <h2>Predict Route Difficulty</h2>
             <form id="predict-form" hx-post="/predict" hx-target="#prediction-result" hx-swap="innerHTML">
                 <div class="form-group">
@@ -67,10 +77,10 @@
                 </div>
                 <button type="submit" class="btn btn-primary">Predict</button>
             </form>
+        </div>
 
-            <div id="prediction-result">
-                <!-- Prediction results will be displayed here -->
-            </div>
+        <div id="prediction-result">
+            <!-- Prediction results will be displayed here -->
         </div>
     </div>
 </body>

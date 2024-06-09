@@ -208,7 +208,7 @@ def get_activities():
     session = SessionLocal()
 
     page = request.args.get('page', 1, type=int)
-    per_page = request.args.get('per_page', 10, type=int)
+    per_page = request.args.get('per_page',4, type=int)
 
     total_activities = session.query(UserActivity).filter(UserActivity.username == current_user.username).count()
     activities = session.query(UserActivity)\
@@ -278,21 +278,25 @@ def get_analytics():
     analytics = session.query(UserAnalytics).filter(UserAnalytics.username == user_id).first()
     session.close()
 
+    analytics_data = {}
+
     if analytics:
-        analytics_data = {
-            'avg_distance': round(analytics.avg_distance,2),
-            'avg_time': round(analytics.avg_time, 2),
-            'avg_heart_rate': round(analytics.avg_heart_rate,2 ),
-            'avg_ascent': round(analytics.avg_ascent, 2),
-            'max_distance': round(analytics.max_distance, 2),
-            'max_time': round(analytics.max_time, 2),
-            'max_ascent': round(analytics.max_ascent, 2)
-        }
-    else:
-        analytics_data = {}
+        if analytics.avg_distance is not None:
+            analytics_data['avg_distance'] = round(analytics.avg_distance, 2)
+        if analytics.avg_time is not None:
+            analytics_data['avg_time'] = round(analytics.avg_time, 2)
+        if analytics.avg_heart_rate is not None:
+            analytics_data['avg_heart_rate'] = round(analytics.avg_heart_rate, 2)
+        if analytics.avg_ascent is not None:
+            analytics_data['avg_ascent'] = round(analytics.avg_ascent, 2)
+        if analytics.max_distance is not None:
+            analytics_data['max_distance'] = round(analytics.max_distance, 2)
+        if analytics.max_time is not None:
+            analytics_data['max_time'] = round(analytics.max_time, 2)
+        if analytics.max_ascent is not None:
+            analytics_data['max_ascent'] = round(analytics.max_ascent, 2)
 
     return render_template('partials/analytics.html', analytics=analytics_data)
-
 def consume_kafka_messages(user_id, stop_event):
     consumer = KafkaConsumer(
         bootstrap_servers=os.getenv('KAFKA_BOOTSTRAP_SERVERS', 'localhost:9092'),

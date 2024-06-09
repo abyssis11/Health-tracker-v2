@@ -1,5 +1,5 @@
-<div>
-    <table>
+<div class="table-container">
+    <table class="table table-striped">
         <thead>
             <tr>
                 <th>Distance (km)</th>
@@ -23,13 +23,13 @@
     </table>
 
     <!-- Pagination controls -->
-    <div>
+    <div class="d-flex justify-content-between">
         {% if context['page'] > 1 %}
-        <button hx-get="/activities?page={{ context['page'] - 1 }}&per_page={{ context['per_page'] }}" hx-target="#activities" hx-swap="innerHTML">Previous</button>
+        <button class="btn btn-primary" hx-get="/activities?page={{ context['page'] - 1 }}&per_page={{ context['per_page'] }}" hx-target="#activities" hx-swap="innerHTML">Previous</button>
         {% endif %}
         <span>Page {{ context['page'] }} of {{ (context['total_activities'] // context['per_page']) + 1 }}</span>
         {% if context['page'] < (context['total_activities'] // context['per_page']) + 1 %}
-        <button hx-get="/activities?page={{ context['page'] + 1 }}&per_page={{ context['per_page'] }}" hx-target="#activities" hx-swap="innerHTML">Next</button>
+        <button class="btn btn-primary" hx-get="/activities?page={{ context['page'] + 1 }}&per_page={{ context['per_page'] }}" hx-target="#activities" hx-swap="innerHTML">Next</button>
         {% endif %}
     </div>
 </div>
