@@ -64,8 +64,6 @@ services:
       - KAFKA_BROKER_ID=1
     depends_on:
       - zookeeper
-    logging:
-      driver: "none"  # Disable logging
 
   zookeeper:
     image: bitnami/zookeeper:latest
@@ -73,8 +71,6 @@ services:
       - "2181:2181"
     environment:
       - ALLOW_ANONYMOUS_LOGIN=yes
-    logging:
-      driver: "none"  # Disable logging
 
   postgres:
     image: postgres:13
@@ -93,6 +89,22 @@ services:
       - "27017:27017"
     volumes:
       - mongo_data:/data/db
+
+  spark:
+    container_name: spark
+    build: ./spark
+    environment:
+      - SPARK_MODE=master
+      - POSTGRES_DB=health_db
+      - POSTGRES_USER=health_user
+      - POSTGRES_PASSWORD=health_pass
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+    volumes:
+      - ./spark/postgresql-42.7.1.jar:/spark/postgresql-42.7.1.jar
+    depends_on:
+      - kafka
+      - postgres
 
 volumes:
   postgres_data:

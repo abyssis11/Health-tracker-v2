@@ -70,6 +70,7 @@ def send_to_kafka(user_id, filepath):
     data = pd.read_csv(filepath, encoding='utf-8')
     for _, row in data.iterrows():
         message = row.to_dict()
+        message['username'] = user_id
         producer.send(topic, value=message)
     producer.flush()
 

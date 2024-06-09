@@ -103,6 +103,17 @@ class User(Base, UserMixin):
     
     def get_id(self):
         return str(self.username)
+    
+class UserAnalytics(Base):
+    __tablename__ = 'user_analytics'
+    username = Column(String, primary_key=True, index=True)
+    avg_distance = Column(Float)
+    avg_time = Column(Float)
+    avg_heart_rate = Column(Float)
+    avg_ascent = Column(Float)
+    max_distance = Column(Float)
+    max_time = Column(Float)
+    max_ascent = Column(Float)
 
 Base.metadata.create_all(bind=engine)
 
@@ -259,6 +270,29 @@ def get_user_activities(user_id):
     print(f"Returning activities: {activities_list}")
     return jsonify({'activities': activities_list})
 
+@app.route('/analytics')
+@login_required
+def get_analytics():
+    user_id = current_user.username
+    session = SessionLocal()
+    analytics = session.query(UserAnalytics).filter(UserAnalytics.username == user_id).first()
+    session.close()
+
+    if analytics:
+        analytics_data = {
+            'avg_distance': analytics.avg_distance,
+            'avg_time': analytics.avg_time,
+            'avg_heart_rate': analytics.avg_heart_rate,
+            'avg_ascent': analytics.avg_ascent,
+            'max_distance': analytics.max_distance,
+            'max_time': analytics.max_time,
+            'max_ascent': analytics.max_ascent
+        }
+    else:
+        analytics_data = {}
+
+    return jsonify(analytics_data)
+
 def consume_kafka_messages(user_id, stop_event):
     consumer = KafkaConsumer(
         bootstrap_servers=os.getenv('KAFKA_BOOTSTRAP_SERVERS', 'localhost:9092'),
@@ -297,7 +331,12 @@ def consume_kafka_messages(user_id, stop_event):
                     udaljenost = float(data['Udaljenost']) if data['Udaljenost'] != '--' else None
                     vrijeme = convert_time_to_minutes(data['Vrijeme']) if data['Vrijeme'] != '--' else None
                     prosjecni_puls = float(data['Prosječni puls']) if data['Prosječni puls'] != '--' else None
-                    ukupni_uspon = float(data['Ukupni uspon'].replace(',', '')) if data['Ukupni uspon'] != '--' else None
+                    ukupni_uspon = None
+                    if data['Ukupni uspon'] != '--':
+                        value = data['Ukupni uspon']
+                        if isinstance(value, str):
+                            value = value.replace(',', '')
+                        ukupni_uspon = float(value)
                     stres_score = float(data['Training Stress Score®']) if data['Training Stress Score®'] != 0.0 else None
 
                     if udaljenost == None or vrijeme == None or prosjecni_puls == None or ukupni_uspon == None:
