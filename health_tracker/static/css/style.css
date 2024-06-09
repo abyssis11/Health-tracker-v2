@@ -1,0 +1,204 @@
+body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to right, #6aff80, #33cc33);
+    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.container {
+    background: #fff;
+    padding: 60px 20px 20px; /* Increased top padding */
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 800px;
+    width: 100%;
+    text-align: center;
+}
+
+.container h1 {
+    color: #33cc33;
+    margin-bottom: 30px; /* Added margin-bottom for spacing */
+}
+
+.container h2 {
+    color: #33cc33;
+    margin-top: 30px; /* Added margin-top for spacing */
+}
+
+.table-container {
+    min-height: 200px; /* Ensure enough space for the table */
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.table th, .table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+.table th {
+    background-color: #33cc33;
+    color: white;
+}
+
+.table tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.table tr:hover {
+    background-color: #ddd;
+}
+
+.form-group {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.form-control {
+    width: calc(100% - 20px);
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.btn {
+    background: #33cc33;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.btn-primary {
+    background: #33cc33;
+}
+
+.btn-secondary {
+    background: #6aff80;
+}
+
+.btn:hover {
+    background: #28a745;
+}
+
+a {
+    color: #33cc33;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.login-container {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+}
+
+.login-container h1 {
+    margin-bottom: 20px;
+    color: #33cc33;
+}
+
+.login-container .form-group {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.login-container label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.login-container .form-control {
+    width: calc(100% - 20px);
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.login-container .btn {
+    background: #33cc33;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.login-container .btn:hover {
+    background: #28a745;
+}
+
+.login-container a {
+    color: #33cc33;
+}
+
+.login-container a:hover {
+    text-decoration: underline;
+}
+
+.forms {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.login-container label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.login-container input[type="text"],
+.login-container input[type="password"] {
+    width: calc(100% - 20px);
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.login-container input[type="submit"] {
+    background: #33cc33;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.login-container input[type="submit"]:hover {
+    background: #28a745;
+}
+
+.login-container a {
+    color: #33cc33;
+}
+
+.login-container a:hover {
+    text-decoration: underline;
+}
+
+.login-container submit {
+    margin-bottom: 15px;
+    text-align: center;
+}

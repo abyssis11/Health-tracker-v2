@@ -3,10 +3,11 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <title>Register</title>
   </head>
   <body>
-    <div class="container">
+    <div class="login-container">
       <h1>Register</h1>
       <form method="POST" action="{{ url_for('register') }}">
         {{ form.hidden_tag() }}
@@ -34,7 +35,7 @@
           {{ form.resting_heart_rate.label }}
           {{ form.resting_heart_rate(class="form-control") }}
         </div>
-        <button type="submit" class="btn btn-primary">Register</button>
+        <button type="submit" class="btn btn-primary submit">Register</button>
       </form>
     </div>
   </body>
