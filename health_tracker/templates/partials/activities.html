@@ -1,0 +1,22 @@
+<table>
+    <thead>
+        <tr>
+            <th>Distance (km)</th>
+            <th>Time (minutes)</th>
+            <th>Average Heart Rate (bpm)</th>
+            <th>Total Ascent (m)</th>
+            <th>Difficulty</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for activity in context['activities'] %}
+        <tr>
+            <td>{{ activity.udaljenost }}</td>
+            <td>{{ activity.vrijeme }}</td>
+            <td>{{ activity.prosjecni_puls }}</td>
+            <td>{{ activity.ukupni_uspon }}</td>
+            <td>{{ activity.tezina }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>

@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Register</title>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Register</h1>
+      <form method="POST" action="{{ url_for('register') }}">
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+          {{ form.username.label }}
+          {{ form.username(class="form-control") }}
+        </div>
+        <div class="form-group">
+          {{ form.password.label }}
+          {{ form.password(class="form-control") }}
+        </div>
+        <div class="form-group">
+          {{ form.age.label }}
+          {{ form.age(class="form-control") }}
+        </div>
+        <div class="form-group">
+          {{ form.gender.label }}
+          {{ form.gender(class="form-control") }}
+        </div>
+        <div class="form-group">
+          {{ form.max_heart_rate.label }}
+          {{ form.max_heart_rate(class="form-control") }}
+        </div>
+        <div class="form-group">
+          {{ form.resting_heart_rate.label }}
+          {{ form.resting_heart_rate(class="form-control") }}
+        </div>
+        <button type="submit" class="btn btn-primary">Register</button>
+      </form>
+    </div>
+  </body>
+</html>
