@@ -45,16 +45,16 @@
 <body>
     <div class="container main-content">
         <div>
-            <h1>Hi {{ user }}, welcome to the Health Tracker!</h1>
+            <h1>Hi {{ context['user'] }}, welcome to the Health Tracker!</h1>
             <a href="{{ url_for('logout') }}" class="btn btn-secondary logout-btn">Logout</a>
         </div>
-
-        <div id="activities" class="placeholder" hx-get="/activities" hx-swap="innerHTML" hx-trigger="load, every 5s">
+        <div>
+        <div id="activities" class="placeholder" hx-get="/activities" hx-swap="outerHTML" hx-target="this" hx-trigger="load">
             <!-- Initial content will be loaded here by HTMX -->
         </div>
 
         <div>
-            <h2>{{user}} analytics:</h2>
+            <h2>{{ context['user'] }} analytics:</h2>
             <div id="analytics" class="placeholder" hx-get="/analytics" hx-swap="innerHTML" hx-trigger="load, every 5s">
                 <!-- Initial content will be loaded here by HTMX -->
             </div>
@@ -83,5 +83,20 @@
             <!-- Prediction results will be displayed here -->
         </div>
     </div>
+    <script>
+        // Reprocess HTMX content when it is updated
+        document.addEventListener('htmx:afterSwap', function(evt) {
+            if (evt.detail.target.id === 'activities') {
+                var activitiesElement = document.getElementById('activities');
+                var newEndpoint = evt.detail.xhr.getResponseHeader('new-endpoint')
+                if (newEndpoint) {
+                    evt.detail.target.setAttribute('hx-get', newEndpoint);
+                    console.log(newEndpoint)
+                    activitiesElement.outerHTML = activitiesElement.outerHTML
+                    htmx.process(document.body);
+                }
+            }
+        });
+    </script>
 </body>
 </html>

@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, url_for, request, jsonify
+from flask import Flask, render_template, redirect, url_for, request, jsonify, make_response
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, IntegerField, SelectField
 from wtforms.validators import DataRequired, Length, Optional
@@ -200,7 +200,9 @@ def index():
     activities = session.query(UserActivity).filter(UserActivity.username == current_user.username).all()
     session.close()
 
-    return render_template('index.html', user=user_id)
+    context = {"user": user_id, "page": 2, 'per_page': 4}
+
+    return render_template('index.html', context=context)
 
 @app.route('/activities', methods=['GET'])
 @login_required
@@ -225,7 +227,9 @@ def get_activities():
         'page': page,
         'per_page': per_page,
     }
-    return render_template('partials/activities.html', context=context)
+    response = make_response(render_template('partials/activities.html', pagination=context))
+    response.headers['new-endpoint'] = '/activities?page='+str(page)+'&per_page='+str(per_page)
+    return response
 
 @app.route('/predict', methods=['POST'])
 @login_required
@@ -297,6 +301,7 @@ def get_analytics():
             analytics_data['max_ascent'] = round(analytics.max_ascent, 2)
 
     return render_template('partials/analytics.html', analytics=analytics_data)
+
 def consume_kafka_messages(user_id, stop_event):
     consumer = KafkaConsumer(
         bootstrap_servers=os.getenv('KAFKA_BOOTSTRAP_SERVERS', 'localhost:9092'),
