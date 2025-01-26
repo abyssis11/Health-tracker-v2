@@ -1,5 +1,8 @@
 Flask
 pandas
-scikit-learn
-pymongo
+scikit-learn==1.5.1
 requests
+mlflow==2.18.0
+cryptography==43.0.3
+boto3==1.35.63
+numpy

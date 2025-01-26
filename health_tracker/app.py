@@ -302,6 +302,24 @@ def get_analytics():
 
     return render_template('partials/analytics.html', analytics=analytics_data)
 
+@app.route('/all_activities', methods=['GET'])
+@require_api_token
+def get_all_activities():
+    session = SessionLocal()
+    activities = session.query(UserActivity).all()
+    session.close()
+
+    all_activities = [{
+        'username': activity.username,
+        'Udaljenost': activity.udaljenost,
+        'Vrijeme': activity.vrijeme,
+        'Prosječni puls': activity.prosjecni_puls,
+        'Ukupni uspon': activity.ukupni_uspon,
+        'Tezina': activity.tezina
+    } for activity in activities]
+
+    return jsonify({'activities': all_activities})
+
 def consume_kafka_messages(user_id, stop_event):
     consumer = KafkaConsumer(
         bootstrap_servers=os.getenv('KAFKA_BOOTSTRAP_SERVERS', 'localhost:9092'),

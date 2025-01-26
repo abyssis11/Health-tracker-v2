@@ -1,0 +1,10 @@
+mlflow==2.18.0
+pandas
+numpy
+scikit-learn
+responsibleai
+raiwidgets
+Flask
+boto3==1.35.63
+fsspec
+s3fs

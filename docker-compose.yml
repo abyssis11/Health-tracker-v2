@@ -9,6 +9,7 @@ services:
       - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
     depends_on:
       - kafka
+    attach: false
 
   health_tracker:
     build:
@@ -36,6 +37,7 @@ services:
       - kafka
       - postgres
       - ml_model
+    attach: false
 
   ml_model:
     build: ./ml_model
@@ -50,6 +52,46 @@ services:
       - DEBUGGER=True
       - FLASK_DEBUG=1  # Enable debug mode
       - FLASK_ENV=development
+      - AWS_ACCESS_KEY_ID=minio
+      - AWS_SECRET_ACCESS_KEY=minio123
+      - MLFLOW_S3_ENDPOINT_URL=http://minio:9000
+
+  mlflow_server:
+      restart: always
+      build: ./mlflow
+      image: mlflow_server
+      container_name: mlflow_server
+      depends_on:
+          - mc
+          - minio
+      ports:
+          - "5003:5000"
+      environment:
+        - POSTGRES_USER=health_user
+        - POSTGRES_PASSWORD=health_pass
+        - POSTGRES_DB=health_db
+        - AWS_ACCESS_KEY_ID=minio
+        - AWS_SECRET_ACCESS_KEY=minio123
+        - MLFLOW_S3_ENDPOINT_URL=http://minio:9000
+      command: >
+        mlflow server
+        --backend-store-uri postgresql://health_user:health_pass@postgres:5432/health_db
+        --default-artifact-root s3://mlflow/
+        --host 0.0.0.0
+
+  rai_service:
+    build: ./rai_service
+    container_name: rai_service
+    ports:
+      - "5004:5004"
+      - "5010:5010"
+    environment:
+      - MLFLOW_TRACKING_URI=http://mlflow_server:5000
+      - AWS_ACCESS_KEY_ID=minio
+      - AWS_SECRET_ACCESS_KEY=minio123
+      - MLFLOW_S3_ENDPOINT_URL=http://minio:9000
+    depends_on:
+      - mlflow_server
 
   kafka:
     image: bitnami/kafka:latest
@@ -64,6 +106,7 @@ services:
       - KAFKA_BROKER_ID=1
     depends_on:
       - zookeeper
+    attach: false
 
   zookeeper:
     image: bitnami/zookeeper:latest
@@ -71,6 +114,7 @@ services:
       - "2181:2181"
     environment:
       - ALLOW_ANONYMOUS_LOGIN=yes
+    attach: false
 
   postgres:
     image: postgres:13
@@ -82,13 +126,39 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    attach: false
 
-  mongo:
-    image: mongo:latest
+  minio:
+    restart: always
+    image: minio/minio@sha256:d051d800a3025588f37f69f132bb5ef718547a9a4ee95ddee44e04ad952a0a96
+    container_name: mlflow_s3
     ports:
-      - "27017:27017"
+        - "9000:9000"
+        - "9001:9001"
+    command: server /data --console-address ':9001' --address ':9000'
+    environment:
+        - MINIO_ROOT_USER=minio
+        - MINIO_ROOT_PASSWORD=minio123
     volumes:
-      - mongo_data:/data/db
+        - minio_data:/data
+
+  mc:
+    image: minio/mc@sha256:4ccb0c7437bda19ed232603eab10cc246c8f9ac7ccd282943ebb7657a2df4820
+    depends_on:
+        - minio
+    container_name: mc
+    environment:
+        - MINIO_ROOT_USER=minio
+        - MINIO_ROOT_PASSWORD=minio123
+    entrypoint: >
+        /bin/sh -c "
+        /tmp/wait-for-it.sh minio:9000 &&
+        /usr/bin/mc alias set minio http://minio:9000 minio minio123 &&
+        /usr/bin/mc mb minio/mlflow;
+        exit 0;
+        "
+    volumes:
+        - ./wait-for-it.sh:/tmp/wait-for-it.sh
 
   spark:
     container_name: spark
@@ -105,7 +175,8 @@ services:
     depends_on:
       - kafka
       - postgres
+    attach: false
 
 volumes:
   postgres_data:
-  mongo_data:
+  minio_data:
